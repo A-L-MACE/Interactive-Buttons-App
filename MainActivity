@@ -1,0 +1,125 @@
+package com.example.buttoninteractionsapp;
+
+import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    // UI components (layout, image, and buttons)
+    private LinearLayout mainLayout;
+    private ImageView imgClothing;
+    private Button btnRed, btnBlue, btnGreen, btnPurple;
+    private Button btnJoggers, btnHoodie, btnJumper, btnTshirt;
+    private Button btnReset;
+
+    // MediaPlayer for button click sound
+    private MediaPlayer ekh;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main); // Link to the XML layout
+
+        // Initialize Layout Elements
+        // Connect each Java variable to its matching view ID in XML
+        mainLayout = findViewById(R.id.mainLayout);
+        imgClothing = findViewById(R.id.imgClothing);
+
+        btnRed = findViewById(R.id.btnRed);
+        btnBlue = findViewById(R.id.btnBlue);
+        btnGreen = findViewById(R.id.btnGreen);
+        btnPurple = findViewById(R.id.btnPurple);
+
+        btnJoggers = findViewById(R.id.btnJoggers);
+        btnHoodie = findViewById(R.id.btnHoodie);
+        btnJumper = findViewById(R.id.btnJumper);
+        btnTshirt = findViewById(R.id.btnTshirt);
+
+        btnReset = findViewById(R.id.btnReset);
+
+        // Load sound effect for all buttons except reset
+        ekh = MediaPlayer.create(this, R.raw.ekh);
+
+        // Background Colour Buttons
+        // Change the app's background colour and play a sound when clicked
+        btnRed.setOnClickListener(v -> {
+            mainLayout.setBackgroundColor(Color.parseColor("#FF6B6B"));
+            playSound(ekh);
+        });
+        btnBlue.setOnClickListener(v -> {
+            mainLayout.setBackgroundColor(Color.parseColor("#4D96FF"));
+            playSound(ekh);
+        });
+        btnGreen.setOnClickListener(v -> {
+            mainLayout.setBackgroundColor(Color.parseColor("#6BCB77"));
+            playSound(ekh);
+        });
+        btnPurple.setOnClickListener(v -> {
+            mainLayout.setBackgroundColor(Color.parseColor("#800080"));
+            playSound(ekh);
+        });
+
+        // Clothing Selection Buttons
+        // Display different clothing images and play sound when clicked
+        btnJoggers.setOnClickListener(v -> {
+            imgClothing.setImageResource(R.drawable.joggers);
+            playSound(ekh);
+        });
+        btnHoodie.setOnClickListener(v -> {
+            imgClothing.setImageResource(R.drawable.hoodie);
+            playSound(ekh);
+        });
+        btnJumper.setOnClickListener(v -> {
+            imgClothing.setImageResource(R.drawable.jumper); // Shows jumper image
+            playSound(ekh);
+        });
+        btnTshirt.setOnClickListener(v -> {
+            imgClothing.setImageResource(R.drawable.tshirt); // Shows T-shirt image
+            playSound(ekh);
+        });
+
+        // The Reset Button
+        // Resets background colour and removes the clothing image
+        // Plays a separate "reset" sound
+        btnReset.setOnClickListener(v -> {
+            // Reset background to white
+            mainLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+
+            // Remove displayed clothing image
+            imgClothing.setImageDrawable(null);
+
+            // Play reset sound
+            MediaPlayer reset = MediaPlayer.create(this, R.raw.reset);
+            reset.start();
+
+            // Release sound resource after playing to prevent memory leaks
+            reset.setOnCompletionListener(MediaPlayer::release);
+        });
+    }
+
+    // Help Method to Play the Sound
+    // Restarts the sound if already playing, otherwise it plays from the start
+    private void playSound(MediaPlayer sound) {
+        if (sound.isPlaying()) {
+            sound.seekTo(0); // Restart sound from beginning
+        }
+        sound.start();
+    }
+
+    // Cleanup on App Close
+    // Releases MediaPlayer resources to avoid memory leaks
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (ekh != null) {
+            ekh.release();
+            ekh = null;
+        }
+    }
+}
